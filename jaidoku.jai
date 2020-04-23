@@ -115,15 +115,15 @@ Select :: (x: u8, y: u8) {
 SetupCells :: () {
     for box_x: 0..2 {
         for box_y: 0..2 {
-            for x: box_x*3..box_x*3+2 {
-                for y: box_y*3..box_y*3+2 {
-                    index := (x+1)*10+y+1;
-                    cells[index].rect.x = xx(padding + box_x*between_box + x*cell_size);
-                    cells[index].rect.y = xx(padding + box_y*between_box + y*cell_size);
-                    cells[index].rect.w = cell_size+1;
-                    cells[index].rect.h = cell_size+1;
-                    cells[index].x = xx(x+1);
-                    cells[index].y = xx(y+1);
+            for _x: box_x*3..box_x*3+2 {
+                for _y: box_y*3..box_y*3+2 {
+                    using cells[(_x+1)*10+_y+1];
+                    rect.x = xx(padding + box_x*between_box + _x*cell_size);
+                    rect.y = xx(padding + box_y*between_box + _y*cell_size);
+                    rect.w = cell_size+1;
+                    rect.h = cell_size+1;
+                    x = xx(_x+1);
+                    y = xx(_y+1);
                 }
             }
         }
@@ -169,10 +169,10 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
     if cell.num == 0 return;
 
     rect := cell.rect;
-    rect.x += 10;
-    rect.y += 8;
-    rect.w -= 20;
-    rect.h -= 16;
+    rect.x += 12;
+    rect.y += 10;
+    rect.w -= 24;
+    rect.h -= 20;
 
     /* the following sets up a bunch of rects
        representing a 7-seg display type thing

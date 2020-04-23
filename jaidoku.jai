@@ -11,6 +11,7 @@ cursor_x     : u8;
 cursor_y     : u8;
 multi_select : bool;
 centre_mode  : bool;
+click_held   : bool;
 
 Cell :: struct {
     rect     : SDL_Rect;
@@ -46,6 +47,15 @@ main :: () {
             if event.type == {
                 case SDL_QUIT;
                     exit = true;
+                case SDL_MOUSEBUTTONDOWN;
+                    if event.button.button == SDL_BUTTON_LEFT {
+                        click_held = true;
+                        SelectMouse(event.button.x, event.button.y);
+                    }
+                case SDL_MOUSEBUTTONUP;
+                    if event.button.button == SDL_BUTTON_LEFT  click_held = false;
+                case SDL_MOUSEMOTION;
+                    if click_held  SelectMouse(event.button.x, event.button.y);
                 case SDL_KEYUP;
                     k := event.key.keysym.sym;
                     if      k == SDLK_ESCAPE exit = true;
@@ -101,6 +111,21 @@ SelectAll :: () {
     for * cells  it.selected = !all_selected;
 
     cells[cursor_x*10 + cursor_y].selected = true;
+}
+
+SelectMouse :: (x: int, y: int) {
+    for * cells {
+        if x <= it.rect.x            continue;
+        if x > it.rect.x + it.rect.w continue;
+        if y <= it.rect.y            continue;
+        if y > it.rect.y + it.rect.h continue;
+
+        if !multi_select for * cells it.selected = false;
+
+        cursor_x = it.x;
+        cursor_y = it.y;
+        it.selected = true;
+    }
 }
 
 Select :: (x: u8, y: u8) {

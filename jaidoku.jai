@@ -38,7 +38,37 @@ main :: () {
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SetupCells();
-    Select(1, 1);
+    Select(5, 5);
+    cells[11].num = 5;
+    cells[12].num = 3;
+    cells[15].num = 7;
+    cells[21].num = 6;
+    cells[24].num = 1;
+    cells[25].num = 9;
+    cells[26].num = 5;
+    cells[32].num = 9;
+    cells[33].num = 8;
+    cells[38].num = 6;
+    cells[41].num = 8;
+    cells[45].num = 6;
+    cells[49].num = 3;
+    cells[51].num = 4;
+    cells[54].num = 8;
+    cells[56].num = 3;
+    cells[59].num = 1;
+    cells[61].num = 7;
+    cells[65].num = 2;
+    cells[69].num = 6;
+    cells[72].num = 6;
+    cells[77].num = 2;
+    cells[78].num = 8;
+    cells[84].num = 4;
+    cells[85].num = 1;
+    cells[86].num = 9;
+    cells[89].num = 5;
+    cells[95].num = 8;
+    cells[98].num = 7;
+    cells[99].num = 9;
 
     exit := false;
     while !exit {

@@ -10,12 +10,15 @@ cells        : [100] Cell;
 cursor_x     : u8;
 cursor_y     : u8;
 multi_select : bool;
+centre_mode  : bool;
 
 Cell :: struct {
-    rect : SDL_Rect;
+    rect     : SDL_Rect;
     selected : bool;
-    x : u8;
-    y : u8;
+    x        : u8;
+    y        : u8;
+    num      : u8;
+    centre   : [10] bool;
 }
 
 main :: () {
@@ -47,6 +50,7 @@ main :: () {
                     k := event.key.keysym.sym;
                     if      k == SDLK_ESCAPE exit = true;
                     else if k == SDLK_LSHIFT multi_select = false;
+                    else if k == SDLK_SPACE  centre_mode = false;
                 case SDL_KEYDOWN;
                     k := event.key.keysym.sym;
                     if      k == SDLK_w || k == SDLK_UP    Select(cursor_x,   cursor_y-1);
@@ -54,13 +58,24 @@ main :: () {
                     else if k == SDLK_s || k == SDLK_DOWN  Select(cursor_x,   cursor_y+1);
                     else if k == SDLK_d || k == SDLK_RIGHT Select(cursor_x+1, cursor_y  );
                     else if k == SDLK_LSHIFT               multi_select = true;
+                    else if k == SDLK_SPACE                centre_mode = true;
+                    else if k == SDLK_1                    SetNumber(1);
+                    else if k == SDLK_2                    SetNumber(2);
+                    else if k == SDLK_3                    SetNumber(3);
+                    else if k == SDLK_4                    SetNumber(4);
+                    else if k == SDLK_5                    SetNumber(5);
+                    else if k == SDLK_6                    SetNumber(6);
+                    else if k == SDLK_7                    SetNumber(7);
+                    else if k == SDLK_8                    SetNumber(8);
+                    else if k == SDLK_9                    SetNumber(9);
+                    else if k == SDLK_DELETE               SetNumber(0);
             }
         }
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
-        DrawEmptyGrid(renderer);
+        DrawGrid(renderer);
 
         SDL_RenderPresent(renderer);
     }
@@ -97,7 +112,7 @@ SetupCells :: () {
     }
 }
 
-DrawEmptyGrid :: (renderer : *SDL_Renderer) {
+DrawGrid :: (renderer : *SDL_Renderer) {
     for * cells {
         if it.selected {
             if it.x == cursor_x && it.y == cursor_y
@@ -109,6 +124,16 @@ DrawEmptyGrid :: (renderer : *SDL_Renderer) {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderDrawRect(renderer, *it.rect);
+
+        if it.num > 0 {
+            // @TODO: draw actual numbers, just a rect for now
+            rect := it.rect;
+            rect.x += 2;
+            rect.y += 2;
+            rect.w -= 4;
+            rect.h -= 4;
+            SDL_RenderDrawRect(renderer, *rect);
+        }
     }
 
     rect : SDL_Rect;
@@ -117,4 +142,12 @@ DrawEmptyGrid :: (renderer : *SDL_Renderer) {
     rect.w = full_size - padding*2 + 2;
     rect.h = full_size - padding*2 + 2;
     SDL_RenderDrawRect(renderer, *rect);
+}
+
+SetNumber :: (n : u8) {
+    for * cells {
+        if !it.selected  continue;
+        if centre_mode  it.centre[n] = !it.centre[n];
+        else            it.num = n;
+    }
 }

@@ -114,6 +114,8 @@ SetupCells :: () {
 
 DrawGrid :: (renderer : *SDL_Renderer) {
     for * cells {
+        if it.x == 0 || it.y == 0 continue;
+
         if it.selected {
             if it.x == cursor_x && it.y == cursor_y
                 SDL_SetRenderDrawColor(renderer, 220, 180, 180, 255);
@@ -125,15 +127,7 @@ DrawGrid :: (renderer : *SDL_Renderer) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderDrawRect(renderer, *it.rect);
 
-        if it.num > 0 {
-            // @TODO: draw actual numbers, just a rect for now
-            rect := it.rect;
-            rect.x += 2;
-            rect.y += 2;
-            rect.w -= 4;
-            rect.h -= 4;
-            SDL_RenderDrawRect(renderer, *rect);
-        }
+        DrawCellDetails(renderer, it);
     }
 
     rect : SDL_Rect;
@@ -149,5 +143,117 @@ SetNumber :: (n : u8) {
         if !it.selected  continue;
         if centre_mode  it.centre[n] = !it.centre[n];
         else            it.num = n;
+    }
+}
+
+DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
+
+    if cell.num == 0 return;
+
+    rect := cell.rect;
+    rect.x += 10;
+    rect.y += 8;
+    rect.w -= 20;
+    rect.h -= 16;
+
+    /* the following sets up a bunch of rects
+       representing a 7-seg display type thing
+       
+        -----
+        | | |
+        -----
+        | | |
+        -----
+    */
+
+    thickness :: 5;
+
+    top := rect;
+    top.h = thickness;
+
+    bottom := rect;
+    bottom.y = bottom.y + bottom.h - thickness;
+    bottom.h = thickness;
+
+    left_top := rect;
+    left_top.w = thickness;
+    left_top.h = left_top.h/2;
+
+    left_bot := rect;
+    left_bot.w = thickness;
+    left_bot.h = left_bot.h/2;
+    left_bot.y += left_bot.h;
+
+    right_top := rect;
+    right_top.x = right_top.x + right_top.w - thickness;
+    right_top.w = thickness;
+    right_top.h = right_top.h/2;
+
+    right_bot := rect;
+    right_bot.x = right_bot.x + right_bot.w - thickness;
+    right_bot.w = thickness;
+    right_bot.h = right_bot.h/2;
+    right_bot.y += right_bot.h;
+
+    horizontal := rect;
+    horizontal.y += horizontal.h/2 - thickness/2;
+    horizontal.h = thickness;
+
+    vertical := rect;
+    vertical.x += vertical.w/2 - thickness/2;
+    vertical.w = thickness;
+
+    if cell.num == {
+        case 1;
+            SDL_RenderFillRect(renderer, *vertical);
+        case 2;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *left_bot);
+        case 3;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *right_bot);
+        case 4;
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *left_top);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *right_bot);
+        case 5;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *right_bot);
+            SDL_RenderFillRect(renderer, *left_top);
+        case 6;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *right_bot);
+            SDL_RenderFillRect(renderer, *left_top);
+            SDL_RenderFillRect(renderer, *left_bot);
+        case 7;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *right_bot);
+        case 8;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *right_bot);
+            SDL_RenderFillRect(renderer, *left_top);
+            SDL_RenderFillRect(renderer, *left_bot);
+        case 9;
+            SDL_RenderFillRect(renderer, *top);
+            SDL_RenderFillRect(renderer, *horizontal);
+            SDL_RenderFillRect(renderer, *bottom);
+            SDL_RenderFillRect(renderer, *right_top);
+            SDL_RenderFillRect(renderer, *right_bot);
+            SDL_RenderFillRect(renderer, *left_top);
     }
 }

@@ -194,10 +194,10 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
     if cell.num == 0 return;
 
     rect := cell.rect;
-    rect.x += 12;
-    rect.y += 10;
-    rect.w -= 24;
-    rect.h -= 20;
+    rect.x += 14;
+    rect.y += 12;
+    rect.w -= 28;
+    rect.h -= 24;
 
     /* the following sets up a bunch of rects
        representing a 7-seg display type thing

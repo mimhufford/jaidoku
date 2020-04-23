@@ -110,7 +110,7 @@ SelectAll :: () {
 
     for * cells  it.selected = !all_selected;
 
-    cells[cursor_x*10 + cursor_y].selected = true;
+    cells[cursor_y*10 + cursor_x].selected = true;
 }
 
 SelectMouse :: (x: int, y: int) {
@@ -134,7 +134,7 @@ Select :: (x: u8, y: u8) {
     if !multi_select for * cells  it.selected = false;
     cursor_x = x;
     cursor_y = y;
-    cells[x*10+y].selected = true;
+    cells[y*10+x].selected = true;
 }
 
 SetupCells :: () {
@@ -142,7 +142,7 @@ SetupCells :: () {
         for box_y: 0..2 {
             for _x: box_x*3..box_x*3+2 {
                 for _y: box_y*3..box_y*3+2 {
-                    using cells[(_x+1)*10+_y+1];
+                    using cells[(_y+1)*10+_x+1];
                     rect.x = xx(padding + box_x*between_box + _x*cell_size);
                     rect.y = xx(padding + box_y*between_box + _y*cell_size);
                     rect.w = cell_size+1;

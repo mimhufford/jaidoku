@@ -53,7 +53,9 @@ main :: () {
                     else if k == SDLK_SPACE  centre_mode = false;
                 case SDL_KEYDOWN;
                     k := event.key.keysym.sym;
-                    if      k == SDLK_w || k == SDLK_UP    Select(cursor_x,   cursor_y-1);
+                    mods := SDL_GetModState();
+                    if mods & KMOD_LCTRL && k == SDLK_a    SelectAll();
+                    else if k == SDLK_w || k == SDLK_UP    Select(cursor_x,   cursor_y-1);
                     else if k == SDLK_a || k == SDLK_LEFT  Select(cursor_x-1, cursor_y  );
                     else if k == SDLK_s || k == SDLK_DOWN  Select(cursor_x,   cursor_y+1);
                     else if k == SDLK_d || k == SDLK_RIGHT Select(cursor_x+1, cursor_y  );
@@ -83,6 +85,22 @@ main :: () {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+SelectAll :: () {
+    all_selected := true;
+
+    for * cells {
+        if it.x == 0 || it.y == 0 continue;
+        if !it.selected {
+            all_selected = false;
+            break;
+        }
+    }
+
+    for * cells  it.selected = !all_selected;
+
+    cells[cursor_x*10 + cursor_y].selected = true;
 }
 
 Select :: (x: u8, y: u8) {
@@ -158,7 +176,7 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
 
     /* the following sets up a bunch of rects
        representing a 7-seg display type thing
-       
+
         -----
         | | |
         -----

@@ -2,17 +2,20 @@
 #import "SDL";
 #import "String";
 
-padding     : u16 : 10;
-cell_size   : u16 : 50;
-between_box : u16 : 1;
-full_size   : u16 : cell_size*9 + between_box*2 + padding*2 + 1;
-cells       : [100] Cell;
-cursor_x    : u8;
-cursor_y    : u8;
+padding      : u16 : 10;
+cell_size    : u16 : 50;
+between_box  : u16 : 1;
+full_size    : u16 : cell_size*9 + between_box*2 + padding*2 + 1;
+cells        : [100] Cell;
+cursor_x     : u8;
+cursor_y     : u8;
+multi_select : bool;
 
 Cell :: struct {
     rect : SDL_Rect;
     selected : bool;
+    x : u8;
+    y : u8;
 }
 
 main :: () {
@@ -41,13 +44,16 @@ main :: () {
                 case SDL_QUIT;
                     exit = true;
                 case SDL_KEYUP;
-                    if event.key.keysym.sym == SDLK_ESCAPE exit = true;
+                    k := event.key.keysym.sym;
+                    if      k == SDLK_ESCAPE exit = true;
+                    else if k == SDLK_LSHIFT multi_select = false;
                 case SDL_KEYDOWN;
                     k := event.key.keysym.sym;
                     if      k == SDLK_w || k == SDLK_UP    Select(cursor_x,   cursor_y-1);
                     else if k == SDLK_a || k == SDLK_LEFT  Select(cursor_x-1, cursor_y  );
                     else if k == SDLK_s || k == SDLK_DOWN  Select(cursor_x,   cursor_y+1);
                     else if k == SDLK_d || k == SDLK_RIGHT Select(cursor_x+1, cursor_y  );
+                    else if k == SDLK_LSHIFT               multi_select = true;
             }
         }
 
@@ -67,7 +73,7 @@ main :: () {
 Select :: (x: u8, y: u8) {
     if x < 1 || x > 9 || y < 1 || y > 9 return;
 
-    for * cells  it.selected = false;
+    if !multi_select for * cells  it.selected = false;
     cursor_x = x;
     cursor_y = y;
     cells[x*10+y].selected = true;
@@ -83,6 +89,8 @@ SetupCells :: () {
                     cells[index].rect.y = xx(padding + box_y*between_box + y*cell_size);
                     cells[index].rect.w = cell_size+1;
                     cells[index].rect.h = cell_size+1;
+                    cells[index].x = xx(x+1);
+                    cells[index].y = xx(y+1);
                 }
             }
         }
@@ -92,7 +100,10 @@ SetupCells :: () {
 DrawEmptyGrid :: (renderer : *SDL_Renderer) {
     for * cells {
         if it.selected {
-            SDL_SetRenderDrawColor(renderer, 230, 200, 200, 255);
+            if it.x == cursor_x && it.y == cursor_y
+                SDL_SetRenderDrawColor(renderer, 220, 180, 180, 255);
+            else
+                SDL_SetRenderDrawColor(renderer, 230, 200, 200, 255);
             SDL_RenderFillRect(renderer, *it.rect);
         }
 

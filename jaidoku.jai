@@ -2,8 +2,8 @@
 #import "SDL";
 #import "String";
 
-padding      : u16 : 10;
-cell_size    : u16 : 50;
+padding      : u16 : 20;
+cell_size    : u16 : 66;
 between_box  : u16 : 1;
 full_size    : u16 : cell_size*9 + between_box*2 + padding*2 + 1;
 cells        : [100] Cell;
@@ -235,11 +235,14 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
     else 
         SDL_SetRenderDrawColor(renderer, 70, 70, 90, 255);
 
+
+    cell_padding_x :: 24;
+    cell_padding_y :: 20;
     rect := cell.rect;
-    rect.x += 14;
-    rect.y += 12;
-    rect.w -= 28;
-    rect.h -= 24;
+    rect.x += cell_padding_x;
+    rect.y += cell_padding_y;
+    rect.w -= cell_padding_x*2;
+    rect.h -= cell_padding_y*2;
 
     /* the following sets up a bunch of rects
        representing a 7-seg display type thing

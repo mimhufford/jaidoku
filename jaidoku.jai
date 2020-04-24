@@ -20,6 +20,7 @@ Cell :: struct {
     y        : u8;
     num      : u8;
     centre   : [10] bool;
+    given    : bool;
 }
 
 main :: () {
@@ -39,36 +40,36 @@ main :: () {
 
     SetupCells();
     Select(5, 5);
-    cells[11].num = 5;
-    cells[12].num = 3;
-    cells[15].num = 7;
-    cells[21].num = 6;
-    cells[24].num = 1;
-    cells[25].num = 9;
-    cells[26].num = 5;
-    cells[32].num = 9;
-    cells[33].num = 8;
-    cells[38].num = 6;
-    cells[41].num = 8;
-    cells[45].num = 6;
-    cells[49].num = 3;
-    cells[51].num = 4;
-    cells[54].num = 8;
-    cells[56].num = 3;
-    cells[59].num = 1;
-    cells[61].num = 7;
-    cells[65].num = 2;
-    cells[69].num = 6;
-    cells[72].num = 6;
-    cells[77].num = 2;
-    cells[78].num = 8;
-    cells[84].num = 4;
-    cells[85].num = 1;
-    cells[86].num = 9;
-    cells[89].num = 5;
-    cells[95].num = 8;
-    cells[98].num = 7;
-    cells[99].num = 9;
+    SetGiven(11, 5);
+    SetGiven(12, 3);
+    SetGiven(15, 7);
+    SetGiven(21, 6);
+    SetGiven(24, 1);
+    SetGiven(25, 9);
+    SetGiven(26, 5);
+    SetGiven(32, 9);
+    SetGiven(33, 8);
+    SetGiven(38, 6);
+    SetGiven(41, 8);
+    SetGiven(45, 6);
+    SetGiven(49, 3);
+    SetGiven(51, 4);
+    SetGiven(54, 8);
+    SetGiven(56, 3);
+    SetGiven(59, 1);
+    SetGiven(61, 7);
+    SetGiven(65, 2);
+    SetGiven(69, 6);
+    SetGiven(72, 6);
+    SetGiven(77, 2);
+    SetGiven(78, 8);
+    SetGiven(84, 4);
+    SetGiven(85, 1);
+    SetGiven(86, 9);
+    SetGiven(89, 5);
+    SetGiven(95, 8);
+    SetGiven(98, 7);
+    SetGiven(99, 9);
 
     exit := false;
     while !exit {
@@ -114,7 +115,7 @@ main :: () {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
         SDL_RenderClear(renderer);
 
         DrawGrid(renderer);
@@ -214,14 +215,25 @@ DrawGrid :: (renderer : *SDL_Renderer) {
 SetNumber :: (n : u8) {
     for * cells {
         if !it.selected  continue;
+        if it.given      continue;
         if centre_mode  it.centre[n] = !it.centre[n];
         else            it.num = n;
     }
 }
 
+SetGiven :: (cell : u8, n : u8) {
+    cells[cell].num = n;
+    cells[cell].given = true;
+}
+
 DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
 
     if cell.num == 0 return;
+
+    if cell.given
+        SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
+    else 
+        SDL_SetRenderDrawColor(renderer, 70, 70, 90, 255);
 
     rect := cell.rect;
     rect.x += 14;

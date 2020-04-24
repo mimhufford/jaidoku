@@ -209,6 +209,7 @@ DrawGrid :: (renderer : *SDL_Renderer) {
     rect.y = padding-1;
     rect.w = full_size - padding*2 + 2;
     rect.h = full_size - padding*2 + 2;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderDrawRect(renderer, *rect);
 }
 

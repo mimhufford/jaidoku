@@ -95,23 +95,23 @@ main :: () {
                 case SDL_KEYDOWN;
                     k := event.key.keysym.sym;
                     mods := SDL_GetModState();
-                    if mods & KMOD_LCTRL && k == SDLK_a    SelectAll();
-                    else if k == SDLK_w || k == SDLK_UP    Select(cursor_x,   cursor_y-1);
-                    else if k == SDLK_a || k == SDLK_LEFT  Select(cursor_x-1, cursor_y  );
-                    else if k == SDLK_s || k == SDLK_DOWN  Select(cursor_x,   cursor_y+1);
-                    else if k == SDLK_d || k == SDLK_RIGHT Select(cursor_x+1, cursor_y  );
-                    else if k == SDLK_LSHIFT               multi_select = true;
-                    else if k == SDLK_SPACE                centre_mode = true;
-                    else if k == SDLK_1                    SetNumber(1);
-                    else if k == SDLK_2                    SetNumber(2);
-                    else if k == SDLK_3                    SetNumber(3);
-                    else if k == SDLK_4                    SetNumber(4);
-                    else if k == SDLK_5                    SetNumber(5);
-                    else if k == SDLK_6                    SetNumber(6);
-                    else if k == SDLK_7                    SetNumber(7);
-                    else if k == SDLK_8                    SetNumber(8);
-                    else if k == SDLK_9                    SetNumber(9);
-                    else if k == SDLK_DELETE               SetNumber(0);
+                    if mods & KMOD_LCTRL && k == SDLK_a              SelectAll();
+                    else if k == SDLK_w || k == SDLK_UP              Select(cursor_x,   cursor_y-1);
+                    else if k == SDLK_a || k == SDLK_LEFT            Select(cursor_x-1, cursor_y  );
+                    else if k == SDLK_s || k == SDLK_DOWN            Select(cursor_x,   cursor_y+1);
+                    else if k == SDLK_d || k == SDLK_RIGHT           Select(cursor_x+1, cursor_y  );
+                    else if k == SDLK_LSHIFT                         multi_select = true;
+                    else if k == SDLK_SPACE                          centre_mode = true;
+                    else if k == SDLK_1 || k == SDLK_KP_1            SetNumber(1);
+                    else if k == SDLK_2 || k == SDLK_KP_2            SetNumber(2);
+                    else if k == SDLK_3 || k == SDLK_KP_3            SetNumber(3);
+                    else if k == SDLK_4 || k == SDLK_KP_4            SetNumber(4);
+                    else if k == SDLK_5 || k == SDLK_KP_5            SetNumber(5);
+                    else if k == SDLK_6 || k == SDLK_KP_6            SetNumber(6);
+                    else if k == SDLK_7 || k == SDLK_KP_7            SetNumber(7);
+                    else if k == SDLK_8 || k == SDLK_KP_8            SetNumber(8);
+                    else if k == SDLK_9 || k == SDLK_KP_9            SetNumber(9);
+                    else if k == SDLK_DELETE || k == SDLK_BACKSPACE  SetNumber(0);
             }
         }
 

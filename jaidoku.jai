@@ -38,6 +38,9 @@ main :: () {
 
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+    // @TEMPORARY
+    tex := LoadImage(renderer, "test.bmp");
+
     SetupCells();
     Select(5, 5);
     SetGiven(11, 5);
@@ -120,12 +123,30 @@ main :: () {
 
         DrawGrid(renderer);
 
+        // @TEMPORARY
+        {
+            dst: SDL_Rect;
+            dst.w = 64;
+            dst.h = 64;
+            SDL_RenderCopy(renderer, tex, null, *dst);
+        }
+
         SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+LoadImage :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
+    // @NOTE: SDL module was modify to add some missing bindings
+    file := SDL_RWFromFile(path.data, "rb");
+    surf := SDL_LoadBMP_RW(file, 1);
+    text := SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_SetTextureBlendMode(text, SDL_BLENDMODE_MOD);
+    SDL_FreeSurface(surf);
+    return text;
 }
 
 SelectAll :: () {

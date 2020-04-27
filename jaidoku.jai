@@ -43,6 +43,7 @@ main :: () {
     for 1..9 {
         num_textures[it] = LoadPNG(renderer, tprint("img/%.png", it));
         sml_textures[it] = LoadPNG(renderer, tprint("img/%s.png", it));
+        SDL_SetTextureColorMod(sml_textures[it], 70, 70, 90);
     }
 
     SetupCells();
@@ -145,7 +146,6 @@ LoadPNG :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
     data := stbi_load(path.data, *w, *h, *c, 4);
     surf := SDL_CreateRGBSurfaceWithFormatFrom(data, w, h, 32, 4*w, 376840196);
     text := SDL_CreateTextureFromSurface(renderer, surf);
-    SDL_SetTextureColorMod(text, 0, 0, 0);
     SDL_FreeSurface(surf);
     stbi_image_free(data);
     return text;
@@ -339,6 +339,12 @@ SetGiven :: (cell : u8, n : u8) {
 }
 
 DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
+    if cell.given {
+        SDL_SetTextureColorMod(num_textures[cell.num], 0, 0, 0);
+    } else if cell.num {
+        SDL_SetTextureColorMod(num_textures[cell.num], 70, 70, 90);
+    }
+
     if cell.num {
         // draw main number
         SDL_RenderCopy(renderer, num_textures[cell.num], null, *cell.rect);

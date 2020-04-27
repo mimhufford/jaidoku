@@ -12,6 +12,7 @@ cursor_y     : u8;
 multi_select : bool;
 centre_mode  : bool;
 click_held   : bool;
+num_textures : [10] *SDL_Texture;
 
 Cell :: struct {
     rect     : SDL_Rect;
@@ -38,8 +39,7 @@ main :: () {
 
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    // @TEMPORARY
-    tex := LoadImage(renderer, "test.bmp");
+    for 1..9 num_textures[it] = LoadImage(renderer, tprint("%.bmp", it));
 
     SetupCells();
     Select(5, 5);
@@ -123,14 +123,6 @@ main :: () {
 
         DrawGrid(renderer);
 
-        // @TEMPORARY
-        {
-            dst: SDL_Rect;
-            dst.w = 64;
-            dst.h = 64;
-            SDL_RenderCopy(renderer, tex, null, *dst);
-        }
-
         SDL_RenderPresent(renderer);
     }
 
@@ -141,8 +133,7 @@ main :: () {
 
 LoadImage :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
     // @NOTE: SDL module was modified to add some missing bindings
-    file := SDL_RWFromFile(path.data, "rb");
-    surf := SDL_LoadBMP_RW(file, 1);
+    surf := SDL_LoadBMP(path.data);
     text := SDL_CreateTextureFromSurface(renderer, surf);
     SDL_SetTextureBlendMode(text, SDL_BLENDMODE_MOD);
     SDL_FreeSurface(surf);
@@ -252,118 +243,5 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
 
     if cell.num == 0 return;
 
-    if cell.given
-        SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
-    else 
-        SDL_SetRenderDrawColor(renderer, 70, 70, 90, 255);
-
-
-    cell_padding_x :: 24;
-    cell_padding_y :: 20;
-    rect := cell.rect;
-    rect.x += cell_padding_x;
-    rect.y += cell_padding_y;
-    rect.w -= cell_padding_x*2;
-    rect.h -= cell_padding_y*2;
-
-    /* the following sets up a bunch of rects
-       representing a 7-seg display type thing
-
-        -----
-        | | |
-        -----
-        | | |
-        -----
-    */
-
-    thickness :: 5;
-
-    top := rect;
-    top.h = thickness;
-
-    bottom := rect;
-    bottom.y = bottom.y + bottom.h - thickness;
-    bottom.h = thickness;
-
-    left_top := rect;
-    left_top.w = thickness;
-    left_top.h = left_top.h/2;
-
-    left_bot := rect;
-    left_bot.w = thickness;
-    left_bot.h = left_bot.h/2;
-    left_bot.y += left_bot.h;
-
-    right_top := rect;
-    right_top.x = right_top.x + right_top.w - thickness;
-    right_top.w = thickness;
-    right_top.h = right_top.h/2;
-
-    right_bot := rect;
-    right_bot.x = right_bot.x + right_bot.w - thickness;
-    right_bot.w = thickness;
-    right_bot.h = right_bot.h/2;
-    right_bot.y += right_bot.h;
-
-    horizontal := rect;
-    horizontal.y += horizontal.h/2 - thickness/2;
-    horizontal.h = thickness;
-
-    vertical := rect;
-    vertical.x += vertical.w/2 - thickness/2;
-    vertical.w = thickness;
-
-    if cell.num == {
-        case 1;
-            SDL_RenderFillRect(renderer, *vertical);
-        case 2;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *left_bot);
-        case 3;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *right_bot);
-        case 4;
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *left_top);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *right_bot);
-        case 5;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *right_bot);
-            SDL_RenderFillRect(renderer, *left_top);
-        case 6;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *right_bot);
-            SDL_RenderFillRect(renderer, *left_top);
-            SDL_RenderFillRect(renderer, *left_bot);
-        case 7;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *right_bot);
-        case 8;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *right_bot);
-            SDL_RenderFillRect(renderer, *left_top);
-            SDL_RenderFillRect(renderer, *left_bot);
-        case 9;
-            SDL_RenderFillRect(renderer, *top);
-            SDL_RenderFillRect(renderer, *horizontal);
-            SDL_RenderFillRect(renderer, *bottom);
-            SDL_RenderFillRect(renderer, *right_top);
-            SDL_RenderFillRect(renderer, *right_bot);
-            SDL_RenderFillRect(renderer, *left_top);
-    }
+    SDL_RenderCopy(renderer, num_textures[cell.num], null, *cell.rect);
 }

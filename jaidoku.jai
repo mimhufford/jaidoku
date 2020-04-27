@@ -122,7 +122,7 @@ main :: () {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 225, 225, 225, 255);
+        SDL_SetRenderDrawColor(renderer, 247, 247, 250, 255);
         SDL_RenderClear(renderer);
 
         DrawGrid(renderer);

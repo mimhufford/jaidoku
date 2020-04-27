@@ -13,6 +13,7 @@ multi_select : bool;
 centre_mode  : bool;
 click_held   : bool;
 num_textures : [10] *SDL_Texture;
+sml_textures : [10] *SDL_Texture;
 
 Cell :: struct {
     rect     : SDL_Rect;
@@ -39,7 +40,10 @@ main :: () {
 
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    for 1..9 num_textures[it] = LoadImage(renderer, tprint("%.bmp", it));
+    for 1..9 {
+        num_textures[it] = LoadImage(renderer, tprint("%.bmp", it));
+        sml_textures[it] = LoadImage(renderer, tprint("%s.bmp", it));
+    }
 
     SetupCells();
     Select(5, 5);
@@ -126,6 +130,8 @@ main :: () {
         SDL_RenderPresent(renderer);
     }
 
+    for num_textures SDL_DestroyTexture(it);
+    for sml_textures SDL_DestroyTexture(it);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

@@ -246,13 +246,20 @@ DrawGrid :: (renderer : *SDL_Renderer) {
 }
 
 SetNumber :: (n : u8) {
+    all_have_centre_num := true;
+    for * c: cells {
+        if c.selected && !c.given && !c.num && !c.centre[n] {
+            all_have_centre_num = false; break; 
+        }
+    }
+
     for * cells {
         if !it.selected  continue;
         if it.given      continue;
 
         if centre_mode {
             if it.num    continue;
-            it.centre[n] = !it.centre[n];
+            it.centre[n] = !all_have_centre_num;
         } else {
             it.num = n;
         }

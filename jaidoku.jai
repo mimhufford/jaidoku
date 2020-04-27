@@ -41,8 +41,8 @@ main :: () {
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     for 1..9 {
-        num_textures[it] = LoadImage(renderer, tprint("img/%.bmp", it));
-        sml_textures[it] = LoadImage(renderer, tprint("img/%s.bmp", it));
+        num_textures[it] = LoadPNG(renderer, tprint("img/%.png", it));
+        sml_textures[it] = LoadPNG(renderer, tprint("img/%s.png", it));
     }
 
     SetupCells();
@@ -138,7 +138,20 @@ main :: () {
     SDL_Quit();
 }
 
-LoadImage :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
+LoadPNG :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
+    #import "stb_image";
+    // @NOTE: SDL module was modified to add some missing bindings
+    w, h, c : s32;
+    data := stbi_load(path.data, *w, *h, *c, 4);
+    surf := SDL_CreateRGBSurfaceWithFormatFrom(data, w, h, 32, 4*w, 376840196);
+    text := SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_SetTextureColorMod(text, 0, 0, 0);
+    SDL_FreeSurface(surf);
+    stbi_image_free(data);
+    return text;
+}
+
+LoadBMP :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
     // @NOTE: SDL module was modified to add some missing bindings
     surf := SDL_LoadBMP(path.data);
     text := SDL_CreateTextureFromSurface(renderer, surf);

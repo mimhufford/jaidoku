@@ -41,8 +41,8 @@ main :: () {
     renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     for 1..9 {
-        num_textures[it] = LoadImage(renderer, tprint("%.bmp", it));
-        sml_textures[it] = LoadImage(renderer, tprint("%s.bmp", it));
+        num_textures[it] = LoadImage(renderer, tprint("img/%.bmp", it));
+        sml_textures[it] = LoadImage(renderer, tprint("img/%s.bmp", it));
     }
 
     SetupCells();

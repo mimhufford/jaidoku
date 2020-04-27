@@ -9,4 +9,4 @@ Features
 
 Screenshot
 ----------
-![half completed game](screenshot.png)
+![half completed game](img/screenshot.png)

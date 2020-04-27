@@ -119,6 +119,8 @@ main :: () {
                     else if k == SDLK_8 || k == SDLK_KP_8            SetNumber(8);
                     else if k == SDLK_9 || k == SDLK_KP_9            SetNumber(9);
                     else if k == SDLK_DELETE || k == SDLK_BACKSPACE  Clear();
+                    // @TODO: hook up to UI
+                    else if k == SDLK_RETURN                         Check();
             }
         }
 
@@ -258,6 +260,58 @@ Clear :: () {
             }
         }
     }
+}
+
+Check :: () -> bool {
+
+    CheckRows :: () -> bool {
+        for row : 1..9 {
+            found : [10] bool;
+            for col : 1..9 {
+                index := row*10 + col;
+                num := cells[index].num;
+                if found[num] return false;
+                found[num] = true;
+            }
+        }
+
+        return true;
+    }
+
+    CheckCols :: () -> bool {
+        for col : 1..9 {
+            found : [10] bool;
+            for row : 1..9 {
+                index := row*10 + col;
+                num := cells[index].num;
+                if found[num] return false;
+                found[num] = true;
+            }
+        }
+
+        return true;
+    }
+
+    CheckBoxes :: () -> bool {
+        for box_row : 0..2 {
+            for box_col : 0..2 {
+                for row : box_row*3+1..box_row*3+3 {
+                    found : [10] bool;
+                    for col : box_col*3+1..box_col*3+3 {
+                        index := row*10 + col;
+                        print("%\n", index);
+                        num := cells[index].num;
+                        if found[num] return false;
+                        found[num] = true;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    return CheckCols() && CheckRows() && CheckBoxes();
 }
 
 SetGiven :: (cell : u8, n : u8) {

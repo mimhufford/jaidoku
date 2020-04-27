@@ -140,7 +140,7 @@ main :: () {
 }
 
 LoadImage :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
-    // @NOTE: SDL module was modify to add some missing bindings
+    // @NOTE: SDL module was modified to add some missing bindings
     file := SDL_RWFromFile(path.data, "rb");
     surf := SDL_LoadBMP_RW(file, 1);
     text := SDL_CreateTextureFromSurface(renderer, surf);

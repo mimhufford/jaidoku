@@ -119,7 +119,6 @@ main :: () {
                     else if k == SDLK_8 || k == SDLK_KP_8            SetNumber(8);
                     else if k == SDLK_9 || k == SDLK_KP_9            SetNumber(9);
                     else if k == SDLK_DELETE || k == SDLK_BACKSPACE  Clear();
-                    // @TODO: hook up to UI
                     else if k == SDLK_RETURN                         Check();
             }
         }
@@ -262,7 +261,9 @@ Clear :: () {
     }
 }
 
-Check :: () -> bool {
+Check :: () {
+
+    for row : 1..9 for col : 1..9 if !cells[row*10 + col].num return;
 
     CheckRows :: () -> bool {
         for row : 1..9 {
@@ -311,7 +312,12 @@ Check :: () -> bool {
         return true;
     }
 
-    return CheckCols() && CheckRows() && CheckBoxes();
+    // @NOTE: SDL module was modified to add missing binding
+    if CheckCols() && CheckRows() && CheckBoxes() {
+        SDL_ShowSimpleMessageBox(0, "Congratulations", "Looks good!", null);
+    } else {
+        SDL_ShowSimpleMessageBox(0, "Nope", "Something isn't right!", null);
+    }
 }
 
 SetGiven :: (cell : u8, n : u8) {

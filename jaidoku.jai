@@ -267,13 +267,39 @@ SetGiven :: (cell : u8, n : u8) {
 
 DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
     if cell.num {
+        // draw main number
         SDL_RenderCopy(renderer, num_textures[cell.num], null, *cell.rect);
     } else {
-        // @TODO: calculate proper draw positions
-        for cell.centre {
-            if it {
-                SDL_RenderCopy(renderer, sml_textures[it_index], null, *cell.rect);
+        // draw centre number(s)
+        count := 0; for cell.centre if it count += 1;
+        if !count return;
+
+        rows  := 0; if count rows = (count-1) / 3;
+
+        dst := cell.rect;
+        dst.w = 16;
+        dst.h = 19;
+        dst.y += 3;
+        dst.y += xx ((2-rows)*0.5*dst.h);
+        index := 1;
+
+        for row: 0..rows {
+            cols := count - row*3;
+            cols = min(cols, 3);
+            dst.x = cell.rect.x + 10;
+            dst.x += xx ((3-cols)*0.5*dst.w);
+
+            while cols {
+                if cell.centre[index] {
+                    width : s32;
+                    SDL_RenderCopy(renderer, sml_textures[index], null, *dst);
+                    dst.x += dst.w;
+                    cols  -= 1;
+                }
+                index += 1;
             }
+
+            dst.y += 21;
         }
     }
 }

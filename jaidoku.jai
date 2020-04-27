@@ -246,8 +246,14 @@ SetGiven :: (cell : u8, n : u8) {
 }
 
 DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
-
-    if cell.num == 0 return;
-
-    SDL_RenderCopy(renderer, num_textures[cell.num], null, *cell.rect);
+    if cell.num {
+        SDL_RenderCopy(renderer, num_textures[cell.num], null, *cell.rect);
+    } else {
+        // @TODO: calculate proper draw positions
+        for cell.centre {
+            if it {
+                SDL_RenderCopy(renderer, sml_textures[it_index], null, *cell.rect);
+            }
+        }
+    }
 }

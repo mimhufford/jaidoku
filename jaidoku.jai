@@ -118,7 +118,7 @@ main :: () {
                     else if k == SDLK_7 || k == SDLK_KP_7            SetNumber(7);
                     else if k == SDLK_8 || k == SDLK_KP_8            SetNumber(8);
                     else if k == SDLK_9 || k == SDLK_KP_9            SetNumber(9);
-                    else if k == SDLK_DELETE || k == SDLK_BACKSPACE  SetNumber(0);
+                    else if k == SDLK_DELETE || k == SDLK_BACKSPACE  Clear();
             }
         }
 
@@ -235,8 +235,28 @@ SetNumber :: (n : u8) {
     for * cells {
         if !it.selected  continue;
         if it.given      continue;
-        if centre_mode  it.centre[n] = !it.centre[n];
-        else            it.num = n;
+
+        if centre_mode {
+            if it.num    continue;
+            it.centre[n] = !it.centre[n];
+        } else {
+            it.num = n;
+        }
+    }
+}
+
+Clear :: () {
+    for * cells {
+        if !it.selected  continue;
+        if it.given      continue;
+
+        if it.num {
+            it.num = 0;
+        } else {
+            for * c: it.centre {
+                <<c = false;;
+            }
+        }
     }
 }
 

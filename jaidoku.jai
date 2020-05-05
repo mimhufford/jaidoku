@@ -141,7 +141,6 @@ main :: () {
 
 LoadPNG :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
     #import "stb_image";
-    // @NOTE: SDL module was modified to add some missing bindings
     w, h, c : s32;
     data := stbi_load(path.data, *w, *h, *c, 4);
     surf := SDL_CreateRGBSurfaceWithFormatFrom(data, w, h, 32, 4*w, 376840196);
@@ -152,7 +151,6 @@ LoadPNG :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
 }
 
 LoadBMP :: (renderer: *SDL_Renderer, path: string) -> *SDL_Texture {
-    // @NOTE: SDL module was modified to add some missing bindings
     surf := SDL_LoadBMP(path.data);
     text := SDL_CreateTextureFromSurface(renderer, surf);
     SDL_SetTextureBlendMode(text, SDL_BLENDMODE_MOD);
@@ -332,7 +330,6 @@ Check :: () {
         return true;
     }
 
-    // @NOTE: SDL module was modified to add missing binding
     if CheckCols() && CheckRows() && CheckBoxes() {
         SDL_ShowSimpleMessageBox(0, "Congratulations", "Looks good!", null);
     } else {

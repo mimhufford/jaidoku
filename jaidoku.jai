@@ -38,7 +38,7 @@ main :: () {
         return;
     }
 
-    renderer := SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    renderer := SDL_CreateRenderer(window, -1, 0);
 
     for 1..9 {
         num_textures[it] = LoadPNG(renderer, tprint("img/%.png", it));
@@ -90,6 +90,9 @@ main :: () {
                     if event.button.button == SDL_BUTTON_LEFT {
                         click_held = true;
                         SelectMouse(event.button.x, event.button.y);
+                    }
+                    if event.button.button == SDL_BUTTON_RIGHT {
+                        HighlightSame(event.button.x, event.button.y);
                     }
                 case SDL_MOUSEBUTTONUP;
                     if event.button.button == SDL_BUTTON_LEFT  click_held = false;
@@ -172,6 +175,27 @@ SelectAll :: () {
     for * cells  it.selected = !all_selected;
 
     cells[cursor_y*10 + cursor_x].selected = true;
+}
+
+HighlightSame :: (x: int, y: int) {
+    num := 0;
+
+    for * cells {
+        if x <= it.rect.x            continue;
+        if x > it.rect.x + it.rect.w continue;
+        if y <= it.rect.y            continue;
+        if y > it.rect.y + it.rect.h continue;
+
+        cursor_x = it.x;
+        cursor_y = it.y;
+        num = it.num;
+    }
+
+    for * cells {
+             if num == 0      it.selected = false;
+        else if num == it.num it.selected = true;
+        else                  it.selected = false;
+    }
 }
 
 SelectMouse :: (x: int, y: int) {

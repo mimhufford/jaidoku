@@ -43,7 +43,7 @@ main :: () {
     for 1..9 {
         num_textures[it] = LoadPNG(renderer, tprint("img/%.png", it));
         sml_textures[it] = LoadPNG(renderer, tprint("img/%s.png", it));
-        SDL_SetTextureColorMod(sml_textures[it], 70, 70, 90);
+        SDL_SetTextureColorMod(sml_textures[it], 70, 70, 170);
     }
 
     SetupCells();
@@ -370,7 +370,7 @@ DrawCellDetails :: (renderer : *SDL_Renderer, cell : *Cell) {
     if cell.given {
         SDL_SetTextureColorMod(num_textures[cell.num], 0, 0, 0);
     } else if cell.num {
-        SDL_SetTextureColorMod(num_textures[cell.num], 70, 70, 90);
+        SDL_SetTextureColorMod(num_textures[cell.num], 30, 130, 30);
     }
 
     if cell.num {
